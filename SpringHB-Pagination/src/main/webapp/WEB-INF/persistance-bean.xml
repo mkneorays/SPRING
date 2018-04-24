@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<tx:annotation-driven transaction-manager="htx" />
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:database.properties" />
+	</bean>
+
+	<bean id="htx"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="factory" />
+	</bean>
+
+
+	<bean id="datasource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="20" />
+	</bean>
+
+	<bean id="factory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="datasource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.neorays.domain.LoginBO</value>
+				<value>com.neorays.domain.EmpInsertBO</value>
+
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">${hb.showsql}</prop>
+				<prop key="hibernate.format_sql">${hb.formatsql}</prop>
+				<prop key="hibernate.dialect">${hb.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hb.hbm2ddl.auto}</prop>
+				<!-- working properly -->
+			</props>
+		</property>
+	</bean>
+
+	<bean id="hibernate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="factory" />
+	</bean>
+	<!-- <bean id="sss" class="com.neorays.dao.test.EmployeeDAOTest">
+		<property name="daoTest" ref="dao"></property>
+	</bean>
+	<bean id="dao" class="com.neorays.dao.EmployeeDAOImpl">
+		<property name="factory" ref="factory" />
+	</bean> -->
+	<context:component-scan base-package="com.neorays.dao"/>
+
+</beans>

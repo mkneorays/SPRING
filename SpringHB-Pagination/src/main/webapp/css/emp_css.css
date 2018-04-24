@@ -1,0 +1,54 @@
+body {
+
+	 background-image: url(emp_img.jpg);
+	
+	
+}
+
+form {
+ 
+color:blue;
+}
+#login{
+	 margin-left: 80px;
+	   background-color:blue;
+}
+#emplist{
+  margin-left: 680px;
+  
+  background-color:white;
+ 
+ }
+ 
+#getEmp{
+   margin-top: 100px;
+   margin-left:850px;
+   color: red;
+   font-size: 20px;
+ }
+ .cred{
+ /* background-color:green; */
+   color: red;
+   font-size: 20px;
+ }
+ #logout{
+   margin-top: 100px;
+   margin-left:100px;
+   color: red;
+   font-size: 20px;
+ }
+ 
+ #login{
+   margin-left: 880px;
+   background-color: white;
+   color: red;
+ } 
+b.regd{
+  
+  color: red;
+    margin-left:750px;
+    font-size: 20px;
+    margin-top: 50px;
+    background-color: white;
+   
+ }
