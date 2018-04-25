@@ -1,0 +1,46 @@
+
+<h1 style="color:red;text-align:center">Get Department details</h1>
+
+<form name="frm" >
+  Select Dept no :: <select name="dept" onchange="showDeptDetails()">
+                                         <option value="">------</option>
+                                         <option value="10">10</option>
+                                         <option value="20">20</option>
+                                         <option value="30">30</option>
+                                         <option value="40">40</option>
+                                </select>
+</form>
+  Dept name :: <span id="result1"> </span>  <br>
+  Dept Location :: <span id="result2"> </span>  <br>
+  
+  <script language="JavaScript">
+ var aengg;
+  function showDeptDetails(){
+	  //create AjaxEngine having Cross Browser compatiblity 
+	  if(window.XMLHttpRequest){
+		  //for modern browsers 
+		  aengg=new XMLHttpRequest();
+	  }
+	  else{
+		  //for old IE browser
+		  aengg=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  
+	  //sepcify callback function name
+	  aengg.onreadystatechange=display;  //1
+		
+	  //frame requst url and send request
+	  aengg.open("POST","depturl?deptno="+frm.dept.value,true);  //2
+	    aengg.send();   //4
+  }
+    function display(){   //3  //5
+	   if(aengg.readyState==4 && aengg.status==200){
+		   //write recieved output to web page
+		   var xmlDoc=aengg.responseXML.documentElement;
+		   //write to output to webpage
+		   document.getElementById("result1").innerHTML=xmlDoc.getElementsByTagName("dname")[0].childNodes[0].nodeValue;
+		   document.getElementById("result2").innerHTML=xmlDoc.getElementsByTagName("dloc")[0].childNodes[0].nodeValue;
+	   }//if
+   }//display() 
+</script>
+  

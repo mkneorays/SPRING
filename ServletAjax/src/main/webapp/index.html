@@ -1,0 +1,42 @@
+<script lanaguage="JavaScript">
+ var aengg;
+  function calcSum(){
+	  //create AjaxEngine having Cross Browser compatiblity 
+	  if(window.XMLHttpRequest){
+		  //for modern browsers 
+		  aengg=new XMLHttpRequest();
+	  }
+	  else{
+		  //for old IE browser
+		  aengg=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	  
+
+	  //sepcify callback function name
+	  aengg.onreadystatechange=function(){
+		  if(aengg.readyState==4 && aengg.status==200){
+			   //write recieved output to web page
+			   frm.t3.value=aengg.responseText;
+	     }
+	  }//function()
+	  
+	  //frame requst url and send request
+	  aengg.open("POST","addurl?t1="+frm.t1.value+"&t2="+frm.t2.value,true);
+	    aengg.send();
+  }
+/*    function display(){
+	   if(aengg.readyState==4 && aengg.status==200){
+		   //write recieved output to web page
+		   frm.t3.value=aengg.responseText;
+	   }//if
+   }//display() */
+</script>
+
+
+
+<form  name="frm" method="get">
+   Value1:: <input type="text"  name="t1"><br><br>
+   Value2:: <input type="text"  name="t2"><br><br>
+     <input type="button"  value="sum"  onClick="calcSum()"/><br><br>
+   Result ::<input type="text"  name="t3"><br>
+</form>

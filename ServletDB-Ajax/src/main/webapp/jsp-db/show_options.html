@@ -1,0 +1,70 @@
+
+<script language="javascript">
+ var aengg;
+function showOptions()
+{
+	  //create ajax Engg
+	 if(window.XMLHttpRequest)
+		 aengg=new XMLHttpRequest();
+	 else 
+	     aengg=new ActiveXObject("Microsoft.XMLHTTP");
+	  
+     //read form data	  
+    var no =frm.sdeptno.value;
+    //specify callback function
+    aengg.onreadystatechange=displayOptions;
+   //open conenction
+   aengg.open("post","get_empnames.jsp?dno="+no,true);
+    //send request
+   aengg.send();
+}
+
+//callback function...
+function displayOptions()
+{
+ var i=0;
+
+ if(aengg.readyState==4 && aengg.status==200)
+ {
+	 removeall();
+ var doc = aengg.responseXML.documentElement;
+  var item=doc.getElementsByTagName("ename")[i].childNodes[0].nodeValue;
+  while(item!=null)
+  {
+   addoption(item);
+   i++;
+   item=doc.getElementsByTagName("ename")[i].childNodes[0].nodeValue;
+  }
+ }
+}
+
+function removeall()
+ {
+  var length=frm.sename.length;
+  for(i=length ; i>=0; i--)
+   frm.sename.options[i]=null; 
+ }
+ 
+function addoption(item)
+{
+  var element=document.createElement("OPTION");
+  element.text=item;
+  element.value=item;
+  frm.sename.options.add(element);
+}
+</script>
+<form name="frm">
+Deptno :
+<select name="sdeptno" onchange="showOptions()">
+ <option value="10">10</option>
+ <option value="20">20</option>
+ <option value="30">30</option>
+ <option value="40">40</option>
+</select>
+ <br><br><br><br><br>
+
+Emp names : <select name="sename">
+                                 <option> ----select ------ </option>
+                       </select>
+</form>
+</body>
