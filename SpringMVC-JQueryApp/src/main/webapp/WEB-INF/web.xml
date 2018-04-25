@@ -1,0 +1,23 @@
+<web-app>
+
+     <!-- <listener>
+   <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener> -->
+   
+   <servlet>
+   <servlet-name>servlet</servlet-name>
+   <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  
+   <init-param>
+   <param-name>namespace</param-name>
+   <param-value>dispatcher</param-value>
+   </init-param>
+    <load-on-startup>2</load-on-startup>
+   </servlet>
+   
+   <servlet-mapping>
+   <servlet-name>servlet</servlet-name>
+   <url-pattern>*.htm</url-pattern>
+   </servlet-mapping>
+     
+</web-app>
