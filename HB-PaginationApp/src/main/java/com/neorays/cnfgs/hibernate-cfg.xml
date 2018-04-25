@@ -1,0 +1,42 @@
+
+
+
+ <!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+ "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+
+		<!-- connection properties -->
+		<!-- <property name="connection.driverClass">org.postgresql.Driver</property>
+		<property name="connection.url">jdbc:postgresql:neorays</property>
+		<property name="connection.url">jdbc:postgresql://localhost:5432/neorays</property>
+	    <property name="connection.url">jdbc:postgresql://localhost:5432/neorays</property>
+		<property name="connection.username">postgres</property>
+		<property name="connection.password">POSTGRASQL</property>
+		 -->
+		<!-- connection properties -->
+		<property name="connection.driverClass">oracle.jdbc.driver.OracleDriver</property>
+		<property name="connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>
+	    <!-- <property name="connection.url">jdbc:postgresql://localhost:5432/neorays</property> -->
+		<property name="connection.username">system</property>
+		<property name="connection.password">oracle</property>
+		
+		<!-- c3P0 Connection properties -->
+		<!-- <property name="connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider</property>
+		<property name="c3p0.max_size">100</property>
+		<property name="c3p0.min_size">40</property>
+		<property name="c3p0.timeout">5000</property>
+		<property name="c3p0.acquire_increment">2</property> -->
+
+		<!-- hibernate properties -->
+		<property name="show_sql">true</property>
+		<property name="format_sql">true</property>
+<!-- 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> 
+ -->		<property name="hbm2ddl.auto">update</property> 
+		
+		<!-- mapping file -->
+		<mapping class="com.neorays.domain.Product"/>
+	</session-factory>
+</hibernate-configuration>
