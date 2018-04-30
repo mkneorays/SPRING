@@ -13,15 +13,18 @@ body {
 }
 </style>
 
-<script type="text/javascript">
-    var intervalId = 0;
-    intervalId = setInterval(crunchifyAjax(), 3000);
-</script>
 
 <script type="text/javascript"
     src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 <script type="text/javascript">
-    function crunchifyAjax() {
+     var myVar;
+
+   function myFunction() {
+	   //alert("hiii");
+	myVar = setInterval(ajaxFun, 3000);
+  }
+
+    function ajaxFun() {
     	alert("ajex call")
        $.ajax({
             url : '/SpringMVC-JQueryApp/process.htm',
@@ -39,7 +42,7 @@ body {
  
 <body>
     <div align="center">
-        <br> <br> <button onclick="crunchifyAjax()">click me</button> <br> <br>
+        <br> <br> <button onclick="myFunction()">click me</button> <br> <br>
         <div id="result"></div>
         <br>
         <p>
