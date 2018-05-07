@@ -1,0 +1,58 @@
+<!DOCTYPE jasperReport PUBLIC
+"//JasperReports//DTD Report Design//EN"
+"http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="sample_report">
+
+ <queryString>
+ <![CDATA[SELECT EMP_ID,EMP_NAME, DEPT_ID FROM EMPLOYEES]]>
+ </queryString>
+
+
+<field name="EMP_ID" class="java.math.BigDecimal"/>
+<field name="EMP_NAME" class="java.lang.String"/>
+<field name="DEPT_ID" class="java.math.BigDecimal"/>
+
+<columnHeader>
+<band height="28" isSplitAllowed="true">
+
+<staticText>
+<reportElement x="40" y="11" width="193" height="15" key="staticText-1"/>
+<text>
+<![CDATA[EMP_ID]]>
+</text>
+</staticText>
+
+
+<staticText>
+<reportElement x="330" y="11" width="193" height="15" key="staticText-2"/>
+<text>
+<![CDATA[EMP_NAME]]>
+</text>
+</staticText>
+
+<staticText>
+<reportElement x="630" y="11" width="193" height="15" key="staticText-2"/>
+<text>
+<![CDATA[DEPT_ID]]>
+</text>
+</staticText>
+
+</band>
+</columnHeader>
+
+<detail>
+<band height="27" isSplitAllowed="true">
+
+<textField>
+<reportElement x="0" y="0" width="0"
+height="0" key="textField"/>
+<textFieldExpression class="java.math.BigDecimal">
+<![CDATA[$F{EMP_ID}]]>
+</textFieldExpression>
+</textField>
+
+</band>
+</detail>   
+
+</jasperReport>
