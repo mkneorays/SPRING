@@ -1,0 +1,174 @@
+https://dzone.com/articles/java-reporting-part-2  //for jasper first app
+
+One of the purposes of the software industry is to automate routine 
+activities and summarize the data in a decision-supporting format, 
+commonly known as "reports".
+
+Core changes: it's usual to modify/add report core logic
+to reflect business changes or usability enhancements.
+
+Results exporting: There is a wide range of formats to
+export your report to, such as: HTML, text, PDF, MS Excel,
+RTF, ODT, Comma-separated values, XML or image.
+Complicated reports sub-reports and cross-tabs reports
+are good example.
+
+Charts reports: visual chart e.g. Graph, Pie, 3D Pie, Bar,
+XY Line, Scatter, Meter and Time series.
+
+A lot of frameworks, tools, libraries, and 3rd parties
+applications were introduced to facilitate the reporting 
+process and to remove the overhead of the mentioned points, 
+our topic today is about one of them .. JasperReport.
+JasperReport is a well-known open source java reporting 
+engine that gained wide popularity in few years.
+Unlike other tools –e.g. Crystal Reports- it's based 
+on java and doesn't have its own expression syntax.
+
+//basic example oj jasper
+
+In JasperReports, you design reports using XML report
+templates. For example, the following XML file is a
+template for a report with a title, two columns of data,
+and page numbers:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" 
+ "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport name="BasicReport" >
+  <parameter name="Title" class="java.lang.String"/>
+  <queryString><![CDATA[select name, cost from product]]></queryString>
+  <field name="NAME" class="java.lang.String"/>
+  <field name="COST" class="java.lang.Double"/>
+  <title>
+    <band height="50">
+      <textField>
+        <reportElement x="0" y="0" width="200" height="50" />       
+        <textFieldExpression class="java.lang.String">$P{Title}</textFieldExpression>
+      </textField>
+    </band>
+  </title>
+  <pageHeader>
+    <band>
+    </band>
+  </pageHeader>
+  <columnHeader>
+    <band height="20">
+      <staticText>
+        <reportElement x="180" y="0" width="180" height="20"/>
+        <textElement>
+          <font isUnderline="true"/>
+        </textElement>
+        <text><![CDATA[NAME]]></text>
+      </staticText>
+      <staticText>
+        <reportElement x="360" y="0" width="180" height="20"/>
+        <textElement>
+          <font isUnderline="true"/>
+        </textElement>
+        <text><![CDATA[COST]]></text>
+      </staticText>
+    </band>
+  </columnHeader>
+  <detail>
+    <band height="20">
+      <textField>
+        <reportElement x="180" y="0" width="180" height="20"/>                  
+        <textFieldExpression class="java.lang.String"><![CDATA[$F{NAME}]]></textFieldExpression>
+      </textField>
+      <textField pattern="0.00">
+        <reportElement x="360" y="0" width="180" height="20"/>                  
+        <textFieldExpression class="java.lang.Double"><![CDATA[$F{COST}]]></textFieldExpression>
+      </textField>
+    </band>
+  </detail>
+  <columnFooter>
+    <band>
+    </band>
+  </columnFooter>
+  <pageFooter>
+    <band height="15">
+      <staticText>
+        <reportElement x="0" y="0" width="40" height="15"/>
+        <textElement/>
+        <text><![CDATA[Page:]]></text>
+      </staticText>
+      <textField>
+        <reportElement x="40" y="0" width="100" height="15"/>
+        <textElement/>
+        <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+      </textField>
+    </band>
+  </pageFooter>
+  <summary>
+    <band>
+    </band>
+  </summary>
+</jasperReport>
+
+
+//basic parameters of jasper
+
+1) title
+2) pageHeader
+3) columnHeader
+4) detail
+5) columnFooter
+6) pageFooter
+7) summary
+
+
+For example, the following lines in the page footer 
+section create a textField containing the current page
+number. The page number's value is set to the variable
+PAGE_NUMBER, defined internally by JasperReports and
+available to all reports:
+
+<textField>
+  <reportElement x="40" y="0" width="100" height="15"/>
+  <textElement/>
+  <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+</textField>
+
+Use JasperReports
+
+To begin using JasperReports, you first must understand what objects JasperReports uses to represent the reporting process as it progresses from report design to report generation:
+
+JasperDesign: Represents a report's definition. In most cases, you create a JasperDesign from an XML report template, though you can also create it programmatically.
+JasperReport: Represents a compiled JasperDesign. The compilation process verifies the report design and compiles the design into a JasperReport object.
+JasperPrint: Represents a generated report. You create a JasperPrint from a JasperReport through the fill process in which a report is populated with data from a data source.
+The JasperReports API's flexibility lets you load JasperDesign, JasperReport, and JasperPrint objects from a file or a stream, and also lets you create these objects programmatically. You can print reports to a printer, an image, or a PDF file. The JasperReports library includes a facade class, dori.jasper.engine.JasperManager, with methods that facilitate loading, compiling, filling, and printing reports. The following code illustrates a JasperManager:
+
+// First, load JasperDesign from XML and compile it into JasperReport
+
+JasperDesign jasperDesign = JasperManager.loadXmlDesign("BasicReport.xml");
+JasperReport jasperReport = JasperManager.compileReport(jasperDesign);
+// Second, create a map of parameters to pass to the report.
+Map parameters = new HashMap();
+parameters.put("ReportTitle", "Basic JasperReport");
+parameters.put("MaxSalary", new Double(25000.00));
+// Third, get a database connection
+Connection conn = Database.getConnection(); 
+// Fourth, create JasperPrint using fillReport() method
+JasperPrint jasperPrint = JasperManager.fillReport(jasperReport, 
+   parameters, conn);
+// You can use JasperPrint to create PDF
+JasperManager.printReportToPdfFile(jasperPrint, "BasicReport.pdf");
+// Or to view report in the JasperViewer
+JasperViewer.viewReport(jasperPrint);
+The code example above shows how to perform some common tasks using JasperReports. In a real-world application, you'd find it impractical to load and compile the JasperDesign every time you wanted to generate a report. Since report designs are largely static, in most cases, you'd precompile your JasperDesign files to increase speed. You can also increase a large report's speed by generating and saving JasperPrint objects as part of a nightly batch process.
+
+That's all you need to get started; download JasperReports and 
+you'll be up and running in no time.
+
+ NOW DATA SOURCE
+
+ FIELDS
+ 
+ EXPRESSIONS
+ 
+ VARIABLE
+ 
+ CHARTS
+ 
+ REPORTS TOOL

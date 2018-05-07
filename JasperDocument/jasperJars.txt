@@ -1,0 +1,216 @@
+Environment
+To set up working environment we need to download JasperReport jar
+file from the following
+URL: http://sourceforge.net/project/showfiles.php?group_id=36382&package_id=28579 
+And add the following jars to your project classpath:
+
+jasperreports-2.0.4.jar
+commons-digester-1.7.jar
+commons-collections-2.1.jar (commons-collections.jar)
+commons-logging-1.0.2.jar
+commons-beanutils.jar
+iText-2.0.7.jar (used infor PDF exporting)
+
+Sample application:
+
+At this section we'll introduce a sample application that generates
+PDF, HTML and Excel files contain the results of our report which 
+is built over Oracle database contains the following table:
+
+//this is table
+
+ITEM
+ITEM_ID---- NUMBER(5) --- NOT NULL
+CATEOGRY_ID---- NUMBER(5)--- NOT NULL
+ITEM_NAME---- VARCHAR2(50) --- NOT NULL
+ITEM_DESCIPTION ---- VARCHAR2(200)
+ITEM_AMOUNT ---- NUMBER(5) ---- NOT NULL
+
+neorays=# create table item (item_id integer(5),
+cateogry_id integer(5), item_name text ,item_desciption text,
+item_amount integer(5);
+
+
+* Result: Report should retrieve the items with amount less than 
+or equal 100 item. 
+
+We're going to divide the work into two steps:
+
+Generate the report design (jrxml file).
+Implement application that assigns data source, compiles jrxml
+file and exports result in the chosen format.
+
+* Designing The Report
+First we create new text file and rename it to sample_report.jrxml,
+this file should contain the following XML tags.
+
+
+<!DOCTYPE jasperReport PUBLIC
+"//JasperReports//DTD Report Design//EN"
+"http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="sample_report" >
+<queryString>
+<![CDATA[select item_name,item_amount from item
+where item_amount <=100]]>
+</queryString>
+<field name="ITEM_NAME" class="java.lang.String"/>
+<field name="ITEM_AMOUNT" class="java.math.BigDecimal"/>
+<columnHeader>
+<band height="28" isSplitAllowed="true">
+<staticText>
+<reportElement x="40" y="11" width="193" height="15" key="staticText-1"/>
+<text>
+<![CDATA[Item Name]]>
+</text>
+</staticText>
+<staticText>
+<reportElement x="330" y="11" width="193" height="15" key="staticText-2"/>
+<text>
+<![CDATA[Item Amount]]>
+</text>
+</staticText>
+</band>
+</columnHeader>
+
+<detail>
+<band height="27" isSplitAllowed="true">
+<textField>
+<reportElement x="47" y="6" width="173"
+height="18" key="textField"/>
+<textFieldExpression class="java.lang.String">
+<![CDATA[$F{ITEM_NAME}]]>
+</textFieldExpression>
+</textField>
+<textField >
+<reportElement x="330" y="6" width="100"
+height="18" key="textField"/>
+<textFieldExpression class="java.math.BigDecimal">
+<![CDATA[$F{ITEM_AMOUNT}]]>
+</textFieldExpression>
+</textField>
+</band>
+</detail>
+</jasperReport>
+
+
+The above XML file consists of the following main sections that 
+defining report behavior and layout:
+
+1) <queryString>: contains the SQL statement which retrieves the
+report result.
+
+<field name>: defines the resulted fields from the query, 
+and give them name to reuse them into the report body
+[they are case-sensitive].
+
+<staticText>: contains the header titles "Item Name" in
+<![CDATA[Item Name]]> tag format.
+
+<textFieldExpression>: defines the appearance of result field.
+
+$F{ITEM_NAME}: is a variable contains the value of Query result
+predefined field in the tag <field name>.
+Once we finished the report design file, save it in C:\ directory.
+
+
+Implementing The Report Service:
+- Create a new java project.
+- Import the jars listed in environment section to your project
+libraries.
+- Create new class and import the following packages
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashMap;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+
+Define the data source, in my case it's an oracle connection and
+established by JDBC as following:
+
+public static Connection establishConnection()
+{
+Connection connection = null;
+try
+{
+Class.forName("oracle.jdbc.driver.OracleDriver");
+String oracleURL = "jdbc:oracle:thin:@localhost:1521:mySID";
+connection = DriverManager.getConnection(oracleURL,
+"username","password");
+connection.setAutoCommit(false);
+}
+catch(SQLException exception)
+{
+exception.printStackTrace();
+}
+return connection;
+
+}
+
+
+Finally, the core code for compiling, filling and exporting the
+results in the following sequence:
+
+- Define jasper objects that will hold report template, compiled 
+files, and result files.
+
+/* JasperReport is the object
+that holds our compiled jrxml file */
+JasperReport jasperReport;
+
+
+/* JasperPrint is the object contains
+report after result filling process */
+JasperPrint jasperPrint;
+
+Create a connection to my data-source; initialize the report
+parameter into empty HashMap then compile our jrxml file into 
+JasperReport object and finally fill the JasperPrint object by
+data from data-source connection
+
+// connection is the data source we used to fetch the data from
+Connection connection = establishConnection(); 
+// jasperParameter is a Hashmap contains the parameters
+// passed from application to the jrxml layout
+HashMap jasperParameter = new HashMap();
+
+// jrxml compiling process
+jasperReport = JasperCompileManager.compileReport
+("C://sample_report.jrxml");
+
+// filling report with data from data source
+
+jasperPrint = JasperFillManager.fillReport(jasperReport,
+   jasperParameter, connection); 
+
+
+
+**  Last segment of code is responsible for exporting the result 
+ files into different formats    **
+
+// exporting process
+// 1- export to PDF
+JasperExportManager.exportReportToPdfFile(jasperPrint, 
+"C://sample_report.pdf");
+
+// 2- export to HTML
+JasperExportManager.exportReportToHtmlFile(jasperPrint, 
+"C://sample_report.html" ); 
+
+// 3- export to Excel sheet
+JRXlsExporter exporter = new JRXlsExporter();
+exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, 
+"C://simple_report.xls" );
+
+exporter.exportReport();
+

@@ -1,0 +1,35 @@
+As shown in the above figure JasperReports architecture is
+based on declarative XML fileswhich by convention have an
+extension of jrxml that contains the report layout. A lot 
+of third-party design tools were produced to generate your
+jrxml file in a smooth way (like iReport or JasperAssistant)Design
+file is supposed to be filled by report's result which is fetched 
+from database, XML files, Java collection, Comma-separated values
+or Models. Jasper can communicate with those data-sources and more, 
+it can merge any number of data-sources together and manipulates the 
+results of any combinations. This communication goes through JDBC, 
+JNDI, XQuery, EJBQL, Hibernate or existing Oracle PL/SQL. You also
+can define your own data-source class and pass it to jasper engine 
+directly. After defining your report design layout in jrxml format 
+and determining your data source(s) jasper engine does the rest of 
+work. It compiles your design file and fills it with results fetched 
+from data-source and generates your report to the chosen exporting 
+format (PDF, Excel, HTML, XML, RTF, TXT …, etc.)
+
+
+Report Definition file structure (jrxml):
+Jasper design file –jrxml- contains the following elements:
+
+<jasperReport>: the root element.
+<title>: its contents are printed only once at the beginning of the
+report
+<pageHeader> - its contents are printed at the beginning of every page 
+in the report.
+<detail> - contains the body of the report, repeated by n number of
+results
+<pageFooter> - its contents are printed at the bottom of every page
+in the report.
+<band> - defines a report section, all of the above elements contain
+a band element as its only child element.
+
+Only the root element is mandatory, the rest of elements are optional.
