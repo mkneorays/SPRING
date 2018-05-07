@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "struts-config_1_2.dtd">
+<struts-config>
+
+	<form-beans>
+		<form-bean name="loginForm" type="org.apache.struts.action.DynaActionForm">
+			<form-property name="name" type="java.lang.String"/>
+			<form-property name="age" type="java.lang.String"/>
+			<form-property name="address" type="java.lang.String"/>
+			
+		</form-bean>
+	</form-beans>
+	
+	<action-mappings> 
+		<action path="/login" type="com.cluster.action.CurdAction"  name="loginForm" 
+				parameter="method">
+			<forward name="insert" path="/jsp/insert.jsp"/>
+            <forward name="select" path="/jsp/select.jsp"/>
+           <!--  <forward name="multiply" path="/jsp/multiply.jsp"/> -->
+        </action>
+	</action-mappings> 
+ <message-resources parameter="com/neorays/file/ApplicationResources"/>
+</struts-config> 
