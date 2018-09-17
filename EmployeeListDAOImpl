@@ -1,4 +1,97 @@
-@Override
+//lemda expression java 8 feature
+	@Override
+	@SuppressWarnings({ "unchecked" })
+	public List<AepmEmpListBean> fetchEmployeeList(int erID, String status, PageData pd) {
+		logger.debug("Entered fetchEmployeeList...");
+		SimpleJdbcCall jc = getSimpleJdbcCall("SAEPM_EE_1")
+				.returningResultSet("refcursor",(rsEe,index)->{
+					AepmEmpListBean empListBean = new AepmEmpListBean();
+					System.out.println("qqqqqqqqqqqqqqqqqqqqqqqqq");
+					empListBean.setEeWksNo(rsEe.getString("ee_wks_no"));
+					empListBean.setEeSurname(rsEe.getString("ee_surname"));
+					empListBean.setEeFname(rsEe.getString("ee_fname"));
+					empListBean.setEeSFname(rsEe.getString("ee_sfname"));
+					empListBean.setEeNiNumber(rsEe.getString("ee_ni_number"));
+					empListBean.setEeDobDT(rsEe.getDate("ee_dob")); 
+					empListBean.setEePayFreq(CodeMapUtil.getCodeValue(rsEe.getString("ee_pay_freq"), CodeMapType.PAY_FREQ));
+					empListBean.setCurUserEmail(rsEe.getString("user_email"));
+					
+					empListBean.setEeLastAssessPeriod(rsEe.getInt("ee_last_assess_period"));
+					if(StringUtils.isNotEmpty(rsEe.getString("ee_last_assess_year"))) {
+						empListBean.setEeLastAssessYear(TaxYearUtils.getFormattedTaxYear(rsEe.getString("ee_last_assess_year"), "-"));
+					}
+					empListBean.setAssessStatus(rsEe.getString("assess_status"));
+					empListBean.setEeID(rsEe.getInt("ee_id"));
+					empListBean.setTotDBRecCount(rsEe.getInt("tot_rows"));
+					return empListBean;
+		}//method
+        );
+		SqlParameterSource inparam = new MapSqlParameterSource()
+				///.addValue("iEeErID", erID)
+				//.addValue("strEeSysStatus", status)
+				.addValue("iEeErID", "4")
+				.addValue("strEeSysStatus", "A")
+				.addValue("strSrchBy", pd.getSearchBy())
+				.addValue("strSrchFor", pd.getSearchWith())
+				.addValue("iPageStart", pd.getPgStart())
+				.addValue("iPageEnd", pd.getPgLimit());
+	
+		Map<String, Object> m = jc.execute(inparam);
+		return ((List<AepmEmpListBean>) m.get("refcursor"));
+	}
+	
+	//Annonumes inner class
+	/*
+	 @Override
+	@SuppressWarnings({ "unchecked" })
+	public List<AepmEmpListBean> fetchEmployeeList(int erID, String status, PageData pd) {
+      System.out.println("dao layerr="+erID+"   "+status+" "+pd.getPgLimit()+" "+pd.getPgStart()+" "+pd.getSearchWith()+" "+pd.getSearchBy() );
+                        //dao layerr=  203           A           50                  0                       null                     null
+		logger.debug("Entered fetchEmployeeList...");
+		SimpleJdbcCall jc = getSimpleJdbcCall("SAEPM_EE_1")
+				.returningResultSet("refcursor", new RowMapper<AepmEmpListBean>(){
+
+					@Override
+					public AepmEmpListBean mapRow(ResultSet rsEe, int rowNum) throws SQLException {
+						AepmEmpListBean empListBean = new AepmEmpListBean();
+						
+						empListBean.setEeWksNo(rsEe.getString("ee_wks_no"));
+						empListBean.setEeSurname(rsEe.getString("ee_surname"));
+						empListBean.setEeFname(rsEe.getString("ee_fname"));
+						empListBean.setEeSFname(rsEe.getString("ee_sfname"));
+						empListBean.setEeNiNumber(rsEe.getString("ee_ni_number"));
+						empListBean.setEeDobDT(rsEe.getDate("ee_dob")); 
+						empListBean.setEePayFreq(CodeMapUtil.getCodeValue(rsEe.getString("ee_pay_freq"), CodeMapType.PAY_FREQ));
+						empListBean.setCurUserEmail(rsEe.getString("user_email"));
+						
+						empListBean.setEeLastAssessPeriod(rsEe.getInt("ee_last_assess_period"));
+						if(StringUtils.isNotEmpty(rsEe.getString("ee_last_assess_year"))) {
+							empListBean.setEeLastAssessYear(TaxYearUtils.getFormattedTaxYear(rsEe.getString("ee_last_assess_year"), "-"));
+						}
+						empListBean.setAssessStatus(rsEe.getString("assess_status"));
+						empListBean.setEeID(rsEe.getInt("ee_id"));
+						empListBean.setTotDBRecCount(rsEe.getInt("tot_rows"));
+						return empListBean;
+					}});
+		SqlParameterSource inparam = new MapSqlParameterSource()
+				///.addValue("iEeErID", erID)
+				//.addValue("strEeSysStatus", status)
+				.addValue("iEeErID", "4")
+				.addValue("strEeSysStatus", "A")
+				.addValue("strSrchBy", pd.getSearchBy())
+				.addValue("strSrchFor", pd.getSearchWith())
+				.addValue("iPageStart", pd.getPgStart())
+				.addValue("iPageEnd", pd.getPgLimit());
+	
+		Map<String, Object> m = jc.execute(inparam);
+		return ((List<AepmEmpListBean>) m.get("refcursor"));
+	}*/
+	
+	
+	/* (non-Javadoc)
+	 * @see com.iss.able.pensionsystem.employee.dao.ApsEmployeeListDAO#fetchEmployeeList(int, java.lang.String, com.iss.common.domain.PageData)
+	 */
+	/*@Override
 	@SuppressWarnings({ "unchecked" })
 	public List<AepmEmpListBean> fetchEmployeeList(int erID, String status, PageData pd) {
       System.out.println("dao layerr="+erID+"   "+status+" "+pd.getPgLimit()+" "+pd.getPgStart()+" "+pd.getSearchWith()+" "+pd.getSearchBy() );
@@ -56,4 +149,4 @@
 			//eePayFreq=Monthly, eeID=134, totDBRecCount=213, curUserEmail=dollies-bath@hotmail.com]
 			return empListBean;
 		}
-	}
+	}*/
