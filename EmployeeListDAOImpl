@@ -1,0 +1,59 @@
+@Override
+	@SuppressWarnings({ "unchecked" })
+	public List<AepmEmpListBean> fetchEmployeeList(int erID, String status, PageData pd) {
+      System.out.println("dao layerr="+erID+"   "+status+" "+pd.getPgLimit()+" "+pd.getPgStart()+" "+pd.getSearchWith()+" "+pd.getSearchBy() );
+                        //dao layerr=  203           A           50                  0                       null                     null
+		logger.debug("Entered fetchEmployeeList...");
+		SimpleJdbcCall jc = getSimpleJdbcCall("SAEPM_EE_1")
+				.returningResultSet("refcursor", new EmpListMapper());
+		SqlParameterSource inparam = new MapSqlParameterSource()
+				///.addValue("iEeErID", erID)
+				//.addValue("strEeSysStatus", status)
+				.addValue("iEeErID", "4")
+				.addValue("strEeSysStatus", "A")
+				.addValue("strSrchBy", pd.getSearchBy())
+				.addValue("strSrchFor", pd.getSearchWith())
+				.addValue("iPageStart", pd.getPgStart())
+				.addValue("iPageEnd", pd.getPgLimit());
+	
+		Map<String, Object> m = jc.execute(inparam);
+		return ((List<AepmEmpListBean>) m.get("refcursor"));
+	}
+	
+	class EmpListMapper implements RowMapper<AepmEmpListBean> {
+		public AepmEmpListBean mapRow (ResultSet rsEe, int rowNum) throws SQLException {
+			
+			AepmEmpListBean empListBean = new AepmEmpListBean();
+			System.out.println("dao layer ee_wks_no= "+rsEe.getString("ee_wks_no"));  // 215
+			System.out.println("dao layer ee_ni_number= "+rsEe.getString("ee_ni_number")); //PX058068A
+			System.out.println("dao layer ee_dob= "+rsEe.getDate("ee_dob"));  //sql date   // 1993-05-30
+			System.out.println("dao layer ee_pay_freq= "+CodeMapUtil.getCodeValue(rsEe.getString("ee_pay_freq"), CodeMapType.PAY_FREQ)); // Monthly
+			System.out.println("dao layer ee_last_assess_period= "+rsEe.getInt("ee_last_assess_period")); // 1
+			System.out.println("dao layer ee_last_assess_year= "+rsEe.getString("ee_last_assess_year"));  // 20152016
+			System.out.println("dao layer assess_status= "+rsEe.getString("assess_status"));               //  NEJH
+			System.out.println("dao layer ee_id= "+rsEe.getInt("ee_id"));                               //134                             
+			System.out.println("dao layer tot_rows= "+rsEe.getInt("tot_rows"));   //213  //how many records nothing but total records will come
+			
+			empListBean.setEeWksNo(rsEe.getString("ee_wks_no"));
+			empListBean.setEeSurname(rsEe.getString("ee_surname"));
+			empListBean.setEeFname(rsEe.getString("ee_fname"));
+			empListBean.setEeSFname(rsEe.getString("ee_sfname"));
+			empListBean.setEeNiNumber(rsEe.getString("ee_ni_number"));
+			empListBean.setEeDobDT(rsEe.getDate("ee_dob")); 
+			empListBean.setEePayFreq(CodeMapUtil.getCodeValue(rsEe.getString("ee_pay_freq"), CodeMapType.PAY_FREQ));
+			empListBean.setCurUserEmail(rsEe.getString("user_email"));
+			
+			empListBean.setEeLastAssessPeriod(rsEe.getInt("ee_last_assess_period"));
+			if(StringUtils.isNotEmpty(rsEe.getString("ee_last_assess_year"))) {
+				empListBean.setEeLastAssessYear(TaxYearUtils.getFormattedTaxYear(rsEe.getString("ee_last_assess_year"), "-"));
+			}
+			empListBean.setAssessStatus(rsEe.getString("assess_status"));
+			empListBean.setEeID(rsEe.getInt("ee_id"));
+			empListBean.setTotDBRecCount(rsEe.getInt("tot_rows"));
+			System.out.println("dao layer list= "+empListBean);
+			//AepmEmpListBean [eeLastAssessYear=2015-16, eeLastAssessPeriod=1, eeDob=30/05/1993, eeDobDT=1993-05-30, assessStatus=NEJH,
+			//assessStatusDesc=Non Eligible, eeWksNo=215, eeSurname=Baker, eeFname=Lauren, eeSFname=null, eePerEmail=null, eeNiNumber=PX058068A, 
+			//eePayFreq=Monthly, eeID=134, totDBRecCount=213, curUserEmail=dollies-bath@hotmail.com]
+			return empListBean;
+		}
+	}
