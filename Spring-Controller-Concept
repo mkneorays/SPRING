@@ -1,0 +1,25 @@
+ <dd><i class="fa fa-circle text-danger"></i>
+ <a th:href="@{${T(com.iss.aepm.utils.AePrefixConstants).AE_URL_PREFIX}+'/employee/emp-details/active'}" class="setURLLL"> 
+ View / Edit Active Employee Details</a></dd>
+ 
+ <dd><i class="fa fa-circle text-danger"></i> 
+ <a th:href="@{${T(com.iss.aepm.utils.AePrefixConstants).AE_URL_PREFIX}+'/employee/emp-details/former'}" class="setURLLL"> 
+ View / Edit Former Employee Details</a></dd>
+                          
+@RequestMapping(value = "/employee/emp-details/{empStatus:(?:active|former)}")
+public String viewEmpList(@PathVariable String empStatus, Model model)
+---------------------------------------------------------------------------------------------------------------------------------
+"ajax": {
+					"url": [[@{${URL_PREFIX}+'/employee/emp-details/'+${status}+'/list-data'}]],
+					"type": "POST",
+					"dataType": "json",
+					"data": function (data) {
+						return $.extend( {}, data, {
+							"srchBy": $('#sby').val()
+						}); 
+					} 
+				},
+        
+ @RequestMapping(value="/employee/emp-details/{empStatus:(?:active|former)}/list-data")
+ public void showEmpList(@PathVariable String empStatus, DataTablesRequest dtReq, HttpServletResponse response) throws Exception
+ --------------------------------------------------------------------------------------------------------------------------------
