@@ -1,0 +1,52 @@
+package com.cts.batch;
+import org.springframework.beans.factory.annotation.Value;
+
+public class ClientBean {
+   // @Value("${theCurrency}")
+    @Value(value="mithu")
+    private String currency;
+
+    public void doSomething () {
+        System.out.printf("The currency from prop file is  "+ currency);  //mithu
+       // System.out.printf("The currency name is %s%n", currency.getDisplayName());
+    }
+}
+
+
+--------------------------------------------------------------------
+package com.cts.batch;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+@Configuration
+//@PropertySource("classpath:config.properties")
+public class Config {
+	 @Bean
+	    public ClientBean clientBean () {
+	        return new ClientBean();
+	    }
+}
+
+-------------------------------------------------------------------------
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.cts.batch.ClientBean;
+import com.cts.batch.Config;
+
+public class JConfigPropertySourceExample {
+
+    public static void main (String[] args) {
+        AnnotationConfigApplicationContext context =
+                            new AnnotationConfigApplicationContext(Config.class);
+        ClientBean bean = context.getBean(ClientBean.class);
+        bean.doSomething();
+    }
+}
+-------------------------------------------------------------------------
+put in src/main/resources
+config.properties  kk
+theCurrency=PLN
+thePrice=12,323.7654
+theTradeDate=2016-9-14
